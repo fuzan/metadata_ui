@@ -1,0 +1,110 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 250px;
+  background-color: #f5f5f5;
+}
+
+.sidenav-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.sidenav-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1976d2;
+}
+
+.environment-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px;
+  background-color: rgba(25, 118, 210, 0.08);
+  border-radius: 4px;
+}
+
+.environment-info mat-icon {
+  color: #1976d2;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.environment-info span {
+  flex: 1;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.change-env-button {
+  color: #1976d2;
+}
+
+mat-nav-list {
+  padding-top: 8px;
+}
+
+mat-nav-list a {
+  height: 48px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-nav-list a.active {
+  background-color: rgba(25, 118, 210, 0.08);
+  color: #1976d2;
+}
+
+mat-nav-list a.active mat-icon {
+  color: #1976d2;
+}
+
+.content {
+  padding: 20px;
+}
+
+.login-content {
+  padding: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.login-page {
+  background-color: #fafafa;
+}
+
+mat-icon {
+  margin-right: 8px;
+}
+
+.sidenav-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.logout-button {
+  width: 100%;
+  text-align: left;
+  color: #f44336;
+}
+
+.logout-button mat-icon {
+  margin-right: 8px;
+}
+
+.env-info {
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  color: rgba(0, 0, 0, 0.87);
+}

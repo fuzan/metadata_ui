@@ -1,0 +1,103 @@
+<div class="client-form-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{isEditMode ? 'Edit' : 'Create'}} Client</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>Client ID</mat-label>
+                        <input matInput formControlName="clientId" [readonly]="isEditMode">
+                        <mat-error *ngIf="clientForm.get('clientId')?.hasError('required')">
+                            Client ID is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Client Name</mat-label>
+                        <input matInput formControlName="clientName">
+                        <mat-error *ngIf="clientForm.get('clientName')?.hasError('required')">
+                            Client Name is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="clientDesc" rows="3"></textarea>
+                </mat-form-field>
+
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>TPP ID</mat-label>
+                        <input matInput formControlName="tppId">
+                        <mat-error *ngIf="clientForm.get('tppId')?.hasError('required')">
+                            TPP ID is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Client Secret</mat-label>
+                        <input matInput formControlName="clientSecret" type="password">
+                        <mat-error *ngIf="clientForm.get('clientSecret')?.hasError('required')">
+                            Client Secret is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>Status</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option value="ACTIVE">Active</mat-option>
+                            <mat-option value="INACTIVE">Inactive</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>URI</mat-label>
+                        <input matInput formControlName="uri">
+                        <mat-icon matSuffix>link</mat-icon>
+                        <mat-error *ngIf="clientForm.get('uri')?.hasError('pattern')">
+                            Please enter a valid URL (starting with http:// or https://)
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>Logo URI</mat-label>
+                        <input matInput formControlName="logoUri">
+                        <mat-icon matSuffix>image</mat-icon>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Contacts</mat-label>
+                    <mat-chip-grid #chipList>
+                        <mat-chip-row *ngFor="let contact of clientForm.get('contacts')?.value"
+                            (removed)="removeContact(contact)">
+                            {{contact}}
+                            <button matChipRemove>
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    </mat-chip-grid>
+                    <input placeholder="Add contact..." [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        (matChipInputTokenEnd)="addContact($event)">
+                </mat-form-field>
+
+
+
+                <div class="form-actions">
+                    <button mat-button type="button" routerLink="/clients">Cancel</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!clientForm.valid">
+                        {{isEditMode ? 'Update' : 'Create'}}
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

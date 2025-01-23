@@ -1,0 +1,21 @@
+<div class="environment-selection-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Select Environment</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field appearance="fill">
+                <mat-label>Choose Environment</mat-label>
+                <mat-select (selectionChange)="onEnvironmentChange($event.value)">
+                    <mat-option *ngFor="let env of environments" [value]="env">
+                        {{ env.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="loading-spinner" *ngIf="isLoading">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

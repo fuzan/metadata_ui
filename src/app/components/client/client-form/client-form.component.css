@@ -1,0 +1,42 @@
+.client-form-container {
+    padding: 20px;
+}
+
+mat-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row > * {
+    flex: 1;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+mat-chip-list {
+    width: 100%;
+}

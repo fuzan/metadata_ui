@@ -1,0 +1,36 @@
+<div class="tpp-list-container">
+    <h2>Third Party Providers</h2>
+    <button mat-raised-button color="primary" routerLink="/tpps/new">Add New TPP</button>
+
+    <mat-table [dataSource]="tpps">
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+            <mat-cell *matCellDef="let tpp">{{tpp.id}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let tpp">{{tpp.name}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tppDesc">
+            <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+            <mat-cell *matCellDef="let tpp">{{tpp.tppDesc}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let tpp">
+                <button mat-icon-button [routerLink]="['/tpps', tpp.id, 'edit']">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteTPP(tpp.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+</div>

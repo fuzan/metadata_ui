@@ -1,0 +1,108 @@
+<div class="client-list-container">
+    <div class="list-header">
+        <h2>Clients</h2>
+        <div class="header-actions">
+            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="deleteSelectedClients()">
+                <mat-icon>delete</mat-icon>
+                Delete Selected
+            </button>
+            <button mat-raised-button color="primary" routerLink="/clients/new">
+                <mat-icon>add</mat-icon>
+                Add New Client
+            </button>
+        </div>
+    </div>
+
+    <mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let client">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(client) : null"
+                    [checked]="selection.isSelected(client)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="clientId">
+            <mat-header-cell *matHeaderCellDef>Client ID</mat-header-cell>
+            <mat-cell *matCellDef="let client">{{client.clientId}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="clientName">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let client">
+                <div class="client-name-cell">
+                    <img *ngIf="client.logoUri" [src]="client.logoUri" alt="logo" class="client-logo">
+                    {{client.clientName}}
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="clientDesc">
+            <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+            <mat-cell *matCellDef="let client">{{client.clientDesc}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tppId">
+            <mat-header-cell *matHeaderCellDef>TPP ID</mat-header-cell>
+            <mat-cell *matCellDef="let client">{{client.tppId}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let client">
+                <span [class]="'status-badge ' + client.status">
+                    {{client.status}}
+                </span>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="uri">
+            <mat-header-cell *matHeaderCellDef>URI</mat-header-cell>
+            <mat-cell *matCellDef="let client">
+                <a [href]="client.uri" target="_blank" *ngIf="client.uri">
+                    <mat-icon>link</mat-icon>
+                </a>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="contacts">
+            <mat-header-cell *matHeaderCellDef>Contacts</mat-header-cell>
+            <mat-cell *matCellDef="let client">
+                <div class="contacts-cell">
+                    <span class="contact-count" [matTooltip]="client.contacts?.join('\n')"
+                        *ngIf="client.contacts?.length">
+                        {{client.contacts.length}} contact(s)
+                    </span>
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let client">
+                <button mat-icon-button [routerLink]="['/clients', client.clientId, 'edit']">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteClient(client.clientId)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Select page">
+    </mat-paginator>
+
+    <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+</div>
