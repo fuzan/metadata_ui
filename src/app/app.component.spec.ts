@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'banking-portal' title`, () => {
+  it(`should have the 'metadata_ui' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('banking-portal');
+    expect(app.title).toEqual('metadata_ui');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, banking-portal');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, metadata_ui');
   });
 });
