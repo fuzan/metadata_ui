@@ -8,7 +8,7 @@ import { TppOrg } from '../models/tpp-org.model';
   providedIn: 'root'
 })
 export class TppOrgService {
-  private apiUrl = `${environment.apiUrl}/tpp-orgs`;
+  private apiUrl = `${environment.apiUrl}/tpp_orgs`;
 
   constructor(private http: HttpClient) { }
 
@@ -39,5 +39,9 @@ export class TppOrgService {
 
   deleteTppOrg(tppOrgId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${tppOrgId}`);
+  }
+
+  deleteTppOrgs(tppOrgIds: string[]): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/batch`, { body: { "tppOrgIds": tppOrgIds } });
   }
 } 

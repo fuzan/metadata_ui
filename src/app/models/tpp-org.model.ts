@@ -7,4 +7,9 @@ export interface TppOrg extends BaseEntity {
     tpp: TPP;
     org: Org;
     status: string;
+}
+
+export enum TppOrgStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'INACTIVE'
 } 

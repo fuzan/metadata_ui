@@ -8,21 +8,21 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Client } from '../../../models/client.model';
-import { ClientService } from '../../../services/client.service';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { SelectionModel } from '@angular/cdk/collections';
+import { Org, OrgStatus } from '../../../models/org.model';
+import { OrgService } from '../../../services/org.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-client-list',
-  templateUrl: './client-list.component.html',
-  styleUrls: ['./client-list.component.css'],
+  selector: 'app-org-list',
+  templateUrl: './org-list.component.html',
+  styleUrls: ['./org-list.component.css'],
   standalone: true,
   imports: [
     CommonModule,
@@ -40,79 +40,98 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ]
 })
-export class ClientListComponent implements OnInit {
-  dataSource = new MatTableDataSource<Client>([]);
-  selection = new SelectionModel<Client>(true, []);
+export class OrgListComponent implements OnInit {
+  dataSource = new MatTableDataSource<Org>([]);
+  selection = new SelectionModel<Org>(true, []);
   displayedColumns: string[] = [
     'select',
-    'clientId',
-    'clientName',
-    'clientDesc',
-    'tppId',
+    'orgId',
+    'orgName',
+    'orgDesc',
     'status',
-    'uri',
-    'logoUri',
-    'contacts',
+    'customerIdTypeCode',
     'actions'
   ];
   isLoading = false;
-  filterColumn = 'clientName';
+  filterColumn = 'orgName';
   filterValue = '';
   filterColumns = [
-    { value: 'clientName', label: 'Client Name' },
-    { value: 'tppId', label: 'TPP ID' },
-    { value: 'status', label: 'Status' }
+    { value: 'orgName', label: 'Organization Name' },
+    { value: 'orgId', label: 'Organization ID' },
+    { value: 'status', label: 'Status' },
+    { value: 'customerIdTypeCode', label: 'Customer ID Type Code' }
   ];
-  statusOptions = ['ACTIVE', 'INACTIVE'];
+  statusOptions = Object.values(OrgStatus);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
-    private clientService: ClientService,
+    private orgService: OrgService,
     private snackBar: MatSnackBar
   ) {
-    this.dataSource.filterPredicate = (data: Client, filter: string) => {
+    this.dataSource.filterPredicate = (data: Org, filter: string) => {
       const filterObj = JSON.parse(filter);
-      const column = filterObj.column as keyof Client;
+      const column = filterObj.column as keyof Org;
       const value = String(data[column] || '').toLowerCase();
       return value.includes(filterObj.value.toLowerCase());
     };
   }
 
   ngOnInit(): void {
-    this.loadClients();
+    this.loadOrgs();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
-  loadClients(): void {
+  loadOrgs(): void {
     this.isLoading = true;
-    this.clientService.getClients()
+    this.orgService.getOrgs()
       .pipe(
         catchError(error => {
-          this.showError('Failed to load clients');
+          this.showError('Failed to load organizations');
           return of([]);
         })
       )
-      .subscribe(clients => {
+      .subscribe(orgs => {
         this.isLoading = false;
-        this.dataSource.data = clients;
+        this.dataSource.data = orgs;
       });
   }
 
-  deleteClient(id: string): void {
-    this.clientService.deleteClient(id)
+  deleteOrg(orgId: string): void {
+    this.orgService.deleteOrg(orgId)
       .pipe(
         catchError(error => {
-          this.showError('Failed to delete client');
+          this.showError('Failed to delete organization');
           return of(void 0);
         })
       )
       .subscribe(() => {
-        this.loadClients();
-        this.showSuccess('Client deleted successfully');
+        this.loadOrgs();
+        this.showSuccess('Organization deleted successfully');
+      });
+  }
+
+  deleteSelectedOrgs(): void {
+    if (this.selection.selected.length === 0) {
+      this.showError('Please select organizations to delete');
+      return;
+    }
+
+    const selectedIds = this.selection.selected.map(org => org.orgId);
+    this.orgService.deleteOrgs(selectedIds)
+      .pipe(
+        catchError(error => {
+          this.showError('Failed to delete selected organizations');
+          return of(void 0);
+        })
+      )
+      .subscribe(() => {
+        this.loadOrgs();
+        this.selection.clear();
+        this.showSuccess('Selected organizations deleted successfully');
       });
   }
 
@@ -142,24 +161,6 @@ export class ClientListComponent implements OnInit {
       return;
     }
     this.selection.select(...this.dataSource.data);
-  }
-
-  deleteSelectedClients() {
-    const selectedIds = this.selection.selected.map(client => client.clientId);
-    if (selectedIds.length > 0) {
-      this.clientService.deleteClients(selectedIds)
-        .pipe(
-          catchError(error => {
-            this.showError('Failed to delete selected clients');
-            return of(void 0);
-          })
-        )
-        .subscribe(() => {
-          this.loadClients();
-          this.selection.clear();
-          this.showSuccess('Selected clients deleted successfully');
-        });
-    }
   }
 
   applyFilter() {

@@ -1,7 +1,14 @@
-export interface Org {
+import { BaseEntity } from './base-entity.model';
+
+export interface Org extends BaseEntity {
     orgId: string;
     orgName: string;
-    customerIdTypeCode: string;
     orgDesc: string;
-    status: string;
+    status: OrgStatus;
+    customerIdTypeCode: string;
+}
+
+export enum OrgStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'INACTIVE'
 } 
