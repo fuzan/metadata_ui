@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "banking-portal": {
+    "metadata_ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
