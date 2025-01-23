@@ -43,6 +43,6 @@ export class ClientService {
   }
 
   deleteClients(clientIds: string[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/deleteBatch`, clientIds);
+    return this.http.delete<void>(`${this.apiUrl}/batch`, { body: { "clientIds" :clientIds} });
   }
 } 

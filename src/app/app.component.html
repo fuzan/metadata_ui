@@ -19,6 +19,18 @@
         <mat-icon matListItemIcon>apps</mat-icon>
         <span matListItemTitle>TPPs</span>
       </a>
+      <a mat-list-item routerLink="/orgs" routerLinkActive="active">
+        <mat-icon matListItemIcon>business</mat-icon>
+        <span matListItemTitle>Organizations</span>
+      </a>
+      <a mat-list-item routerLink="/tpp-orgs" routerLinkActive="active">
+        <mat-icon matListItemIcon>link</mat-icon>
+        <span matListItemTitle>TPP Organizations</span>
+      </a>
+      <a mat-list-item routerLink="/scopes" routerLinkActive="active">
+        <mat-icon matListItemIcon>vpn_key</mat-icon>
+        <span matListItemTitle>Scopes</span>
+      </a>
     </mat-nav-list>
     <div class="sidenav-footer">
       <button mat-button (click)="logout()" class="logout-button">

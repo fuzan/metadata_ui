@@ -1,4 +1,4 @@
-.tpp-list-container {
+.tpp-org-list-container {
     padding: 20px;
 }
 
@@ -69,10 +69,6 @@ mat-table {
     justify-content: flex-end;
 }
 
-.mat-column-tppId {
-    max-width: 100px;
-}
-
 mat-paginator {
     margin-top: 20px;
 }
@@ -86,11 +82,22 @@ mat-paginator {
     margin: 0;
 }
 
-.url-cell {
+.description-cell {
     max-width: 300px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.contacts-cell {
+    display: flex;
+    align-items: center;
+}
+
+.contact-count {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: help;
 }
 
 .mat-elevation-z8 {
@@ -101,19 +108,4 @@ mat-paginator {
 
 mat-row:hover {
     background-color: rgba(0, 0, 0, 0.04);
-}
-
-mat-header-cell {
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.87);
-}
-
-mat-cell {
-    color: rgba(0, 0, 0, 0.87);
-}
-
-.button-container {
-    margin: 16px 0;
-    display: flex;
-    justify-content: flex-end;
 } 

@@ -1,0 +1,71 @@
+<div class="scope-list-container">
+    <div class="list-header">
+        <h2>Scopes</h2>
+        <div class="header-actions">
+            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="deleteSelectedScopes()">
+                <mat-icon>delete</mat-icon>
+                Delete Selected
+            </button>
+            <button mat-raised-button color="primary" routerLink="/scopes/new">
+                <mat-icon>add</mat-icon>
+                Add New Scope
+            </button>
+        </div>
+    </div>
+
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Scope Name Column -->
+        <ng-container matColumnDef="scopeName">
+            <mat-header-cell *matHeaderCellDef>Scope Name</mat-header-cell>
+            <mat-cell *matCellDef="let scope">{{scope.scopeName}}</mat-cell>
+        </ng-container>
+
+        <!-- Mapping URL Column -->
+        <ng-container matColumnDef="mappingUrl">
+            <mat-header-cell *matHeaderCellDef>Mapping URL</mat-header-cell>
+            <mat-cell *matCellDef="let scope">
+                <div class="url-cell" [matTooltip]="scope.mappingUrl">
+                    {{scope.mappingUrl}}
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let scope">
+                <button mat-icon-button [routerLink]="['/scopes', scope.id, 'edit']">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteScope(scope.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons>
+    </mat-paginator>
+
+    <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+</div>

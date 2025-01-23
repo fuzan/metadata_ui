@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/banking-portal",
+            "outputPath": "dist/metadata_ui",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "banking-portal:build:production"
+              "buildTarget": "metadata_ui:build:production"
             },
             "development": {
-              "buildTarget": "banking-portal:build:development"
+              "buildTarget": "metadata_ui:build:development"
             }
           },
           "defaultConfiguration": "development"

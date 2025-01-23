@@ -1,4 +1,4 @@
-.tpp-list-container {
+.scope-list-container {
     padding: 20px;
 }
 
@@ -16,17 +16,6 @@
 .header-actions {
     display: flex;
     gap: 8px;
-}
-
-.filter-container {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 20px;
-    align-items: flex-start;
-}
-
-.filter-container mat-form-field {
-    width: 200px;
 }
 
 mat-table {
@@ -47,30 +36,9 @@ mat-table {
     z-index: 1;
 }
 
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.status-badge.active {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-}
-
-.status-badge.inactive {
-    background-color: #fafafa;
-    color: #616161;
-}
-
 .mat-column-actions {
     max-width: 100px;
     justify-content: flex-end;
-}
-
-.mat-column-tppId {
-    max-width: 100px;
 }
 
 mat-paginator {
@@ -110,10 +78,4 @@ mat-header-cell {
 
 mat-cell {
     color: rgba(0, 0, 0, 0.87);
-}
-
-.button-container {
-    margin: 16px 0;
-    display: flex;
-    justify-content: flex-end;
 } 

@@ -1,14 +1,14 @@
-<div class="tpp-list-container">
+<div class="tpp-org-list-container">
     <div class="list-header">
-        <h2>Third Party Providers</h2>
+        <h2>TPP Organizations</h2>
         <div class="header-actions">
-            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="deleteSelectedTPPs()">
+            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="deleteSelectedTppOrgs()">
                 <mat-icon>delete</mat-icon>
                 Delete Selected
             </button>
-            <button mat-raised-button color="primary" routerLink="/tpps/new">
+            <button mat-raised-button color="primary" routerLink="/tpp-orgs/new">
                 <mat-icon>add</mat-icon>
-                Add New TPP
+                Add New TPP Organization
             </button>
         </div>
     </div>
@@ -58,72 +58,30 @@
             </mat-cell>
         </ng-container>
 
-        <!-- TPP ID Column -->
-        <ng-container matColumnDef="tppId">
-            <mat-header-cell *matHeaderCellDef>TPP ID</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">{{tpp.tppId}}</mat-cell>
+        <!-- TPP Org ID Column -->
+        <ng-container matColumnDef="tppOrgId">
+            <mat-header-cell *matHeaderCellDef>TPP Org ID</mat-header-cell>
+            <mat-cell *matCellDef="let tppOrg">{{tppOrg.tppOrgId}}</mat-cell>
         </ng-container>
 
-        <!-- Name Column -->
+        <!-- TPP Name Column -->
         <ng-container matColumnDef="tppName">
-            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">
-                <div class="tpp-name-cell">
-                    {{tpp.tppName}}
-                </div>
-            </mat-cell>
+            <mat-header-cell *matHeaderCellDef>TPP Name</mat-header-cell>
+            <mat-cell *matCellDef="let tppOrg">{{tppOrg.tpp?.tppName}}</mat-cell>
         </ng-container>
 
-        <!-- Type Column -->
-        <ng-container matColumnDef="tppType">
-            <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">{{tpp.tppType}}</mat-cell>
-        </ng-container>
-
-        <!-- Verified Client Column -->
-        <ng-container matColumnDef="verifiedClient">
-            <mat-header-cell *matHeaderCellDef>Verified Client</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">{{tpp.verifiedClient}}</mat-cell>
-        </ng-container>
-
-        <!-- Scope Names Column -->
-        <ng-container matColumnDef="scopeNameList">
-            <mat-header-cell *matHeaderCellDef>Scope Names</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">
-                <div class="scope-names-cell" [matTooltip]="tpp.scopeNameList">
-                    {{tpp.scopeNameList}}
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Description Column -->
-        <ng-container matColumnDef="tppDesc">
-            <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">
-                <div class="description-cell" [matTooltip]="tpp.tppDesc">
-                    {{tpp.tppDesc}}
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Contact Name Column -->
-        <ng-container matColumnDef="contactName">
-            <mat-header-cell *matHeaderCellDef>Contact Name</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">{{tpp.contactName}}</mat-cell>
-        </ng-container>
-
-        <!-- Contact Email Column -->
-        <ng-container matColumnDef="contactEmail">
-            <mat-header-cell *matHeaderCellDef>Contact Email</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">{{tpp.contactEmail}}</mat-cell>
+        <!-- Organization Name Column -->
+        <ng-container matColumnDef="orgName">
+            <mat-header-cell *matHeaderCellDef>Organization Name</mat-header-cell>
+            <mat-cell *matCellDef="let tppOrg">{{tppOrg.org?.orgName}}</mat-cell>
         </ng-container>
 
         <!-- Status Column -->
         <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">
-                <span [class]="'status-badge ' + tpp.status">
-                    {{tpp.status}}
+            <mat-cell *matCellDef="let tppOrg">
+                <span [class]="'status-badge ' + tppOrg.status">
+                    {{tppOrg.status}}
                 </span>
             </mat-cell>
         </ng-container>
@@ -131,11 +89,11 @@
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-            <mat-cell *matCellDef="let tpp">
-                <button mat-icon-button [routerLink]="['/tpps', tpp.tppId, 'edit']">
+            <mat-cell *matCellDef="let tppOrg">
+                <button mat-icon-button [routerLink]="['/tpp-orgs', tppOrg.tppOrgId, 'edit']">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button (click)="deleteTPP(tpp.tppId)">
+                <button mat-icon-button (click)="deleteTppOrg(tppOrg.tppOrgId)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </mat-cell>

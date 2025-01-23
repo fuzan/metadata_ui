@@ -1,14 +1,14 @@
-<div class="client-list-container">
+<div class="org-list-container">
     <div class="list-header">
-        <h2>Clients</h2>
+        <h2>Organizations</h2>
         <div class="header-actions">
-            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="deleteSelectedClients()">
+            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="deleteSelectedOrgs()">
                 <mat-icon>delete</mat-icon>
                 Delete Selected
             </button>
-            <button mat-raised-button color="primary" routerLink="/clients/new">
+            <button mat-raised-button color="primary" routerLink="/orgs/new">
                 <mat-icon>add</mat-icon>
-                Add New Client
+                Add New Organization
             </button>
         </div>
     </div>
@@ -42,7 +42,8 @@
         </mat-form-field>
     </div>
 
-    <mat-table [dataSource]="dataSource">
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Checkbox Column -->
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
                 <mat-checkbox (change)="$event ? toggleAllRows() : null"
@@ -50,75 +51,59 @@
                     [indeterminate]="selection.hasValue() && !isAllSelected()">
                 </mat-checkbox>
             </mat-header-cell>
-            <mat-cell *matCellDef="let client">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(client) : null"
-                    [checked]="selection.isSelected(client)">
+            <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
                 </mat-checkbox>
             </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="clientId">
-            <mat-header-cell *matHeaderCellDef>Client ID</mat-header-cell>
-            <mat-cell *matCellDef="let client">{{client.clientId}}</mat-cell>
+        <!-- Organization ID Column -->
+        <ng-container matColumnDef="orgId">
+            <mat-header-cell *matHeaderCellDef>Organization ID</mat-header-cell>
+            <mat-cell *matCellDef="let org">{{org.orgId}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="clientName">
+        <!-- Name Column -->
+        <ng-container matColumnDef="orgName">
             <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell *matCellDef="let client">{{client.clientName}}</mat-cell>
+            <mat-cell *matCellDef="let org">{{org.orgName}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="clientDesc">
+        <!-- Description Column -->
+        <ng-container matColumnDef="orgDesc">
             <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
-            <mat-cell *matCellDef="let client">{{client.clientDesc}}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="tppId">
-            <mat-header-cell *matHeaderCellDef>TPP ID</mat-header-cell>
-            <mat-cell *matCellDef="let client">{{client.tppId}}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-            <mat-cell *matCellDef="let client">
-                <span [class]="'status-badge ' + client.status">
-                    {{client.status}}
-                </span>
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="uri">
-            <mat-header-cell *matHeaderCellDef>URI</mat-header-cell>
-            <mat-cell *matCellDef="let client">
-                <a [href]="client.uri" target="_blank" *ngIf="client.uri">
-                    <mat-icon>link</mat-icon>
-                </a>
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="logoUri">
-            <mat-header-cell *matHeaderCellDef>Logo URI</mat-header-cell>
-            <mat-cell *matCellDef="let client">{{client.logoUri}}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="contacts">
-            <mat-header-cell *matHeaderCellDef>Contacts</mat-header-cell>
-            <mat-cell *matCellDef="let client">
-                <div class="contacts-cell">
-                    <span class="contact-count" [matTooltip]="client.contacts?.join('\n')"
-                        *ngIf="client.contacts?.length">
-                        {{client.contacts.length}} contact(s)
-                    </span>
+            <mat-cell *matCellDef="let org">
+                <div class="description-cell" [matTooltip]="org.orgDesc">
+                    {{org.orgDesc}}
                 </div>
             </mat-cell>
         </ng-container>
 
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let org">
+                <span [class]="'status-badge ' + org.status.toLowerCase()">
+                    {{org.status}}
+                </span>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Customer ID Type Code Column -->
+        <ng-container matColumnDef="customerIdTypeCode">
+            <mat-header-cell *matHeaderCellDef>Customer ID Type Code</mat-header-cell>
+            <mat-cell *matCellDef="let org">{{org.customerIdTypeCode}}</mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-            <mat-cell *matCellDef="let client">
-                <button mat-icon-button [routerLink]="['/clients', client.clientId, 'edit']">
+            <mat-cell *matCellDef="let org">
+                <button mat-icon-button [routerLink]="['/orgs', org.orgId, 'edit']">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button (click)="deleteClient(client.clientId)">
+                <button mat-icon-button (click)="deleteOrg(org.orgId)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </mat-cell>
@@ -128,7 +113,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
 
-    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Select page">
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons>
     </mat-paginator>
 
     <div class="loading-spinner" *ngIf="isLoading">

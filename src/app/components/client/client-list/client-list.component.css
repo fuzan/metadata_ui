@@ -104,3 +104,14 @@ mat-paginator {
 .mat-checkbox {
     margin: 0;
 }
+
+.filter-container {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+}
+
+.filter-container mat-form-field {
+    width: 200px;
+}
