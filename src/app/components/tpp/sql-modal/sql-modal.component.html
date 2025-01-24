@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h2 mat-dialog-title>Generated SQL</h2>
+    <button mat-icon-button (click)="close()" class="close-button">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<mat-dialog-content>
+    <pre>{{sql}}</pre>
+    <button mat-raised-button color="primary" (click)="copyToClipboard()" class="paste-button">
+        <mat-icon>content_paste</mat-icon>
+        Copy to Clipboard
+    </button>
+</mat-dialog-content>

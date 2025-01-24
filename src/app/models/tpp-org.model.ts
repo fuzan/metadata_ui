@@ -10,6 +10,6 @@ export interface TppOrg extends BaseEntity {
 }
 
 export enum TppOrgStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE'
+    ACTIVE = 'active',
+    INACTIVE = 'inactive'
 } 

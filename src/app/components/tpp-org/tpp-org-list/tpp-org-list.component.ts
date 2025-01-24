@@ -59,7 +59,7 @@ export class TppOrgListComponent implements OnInit {
     { value: 'orgName', label: 'Organization Name' },
     { value: 'status', label: 'Status' }
   ];
-  statusOptions = ['ACTIVE', 'INACTIVE'];
+  statusOptions = ['active', 'inactive'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

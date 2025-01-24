@@ -9,6 +9,6 @@ export interface Org extends BaseEntity {
 }
 
 export enum OrgStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE'
+    ACTIVE = 'active',
+    INACTIVE = 'inactive'
 } 

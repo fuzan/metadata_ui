@@ -35,14 +35,15 @@ export class ClientService {
       ...client,
       updatedDate: new Date()
     };
-    return this.http.put<Client>(`${this.apiUrl}/${client.clientId}`, updatedClient);
+    return this.http.patch<Client>(`${this.apiUrl}/${client.clientId}`, updatedClient);
   }
 
   deleteClient(clientId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${clientId}`);
   }
 
+  // endpoint is /clientsBatch 
   deleteClients(clientIds: string[]): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/batch`, { body: { "clientIds" :clientIds} });
+    return this.http.delete<void>(`${this.apiUrl}Batch`, { body: { "clientIds" :clientIds} });
   }
 } 

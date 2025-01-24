@@ -63,8 +63,8 @@ mat-paginator {
 }
 
 .status-badge.inactive {
-    background-color: #fafafa;
-    color: #616161;
+    background-color: #b42626;
+    color: #f1f1f1;
 }
 
 .status-badge.suspended {

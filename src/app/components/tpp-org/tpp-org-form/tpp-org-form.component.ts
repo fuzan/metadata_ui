@@ -9,14 +9,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TppOrg, TppOrgStatus } from '../../../models/tpp-org.model';
+import { TppOrgStatus } from '../../../models/tpp-org.model';
 import { TPP } from '../../../models/tpp.model';
 import { Org } from '../../../models/org.model';
 import { TppOrgService } from '../../../services/tpp-org.service';
 import { TPPService } from '../../../services/tpp.service';
 import { OrgService } from '../../../services/org.service';
 import { catchError, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Component({
@@ -57,7 +56,7 @@ export class TppOrgFormComponent implements OnInit {
       tppOrgId: [''],
       tpp: [null, Validators.required],
       org: [null, Validators.required],
-      status: ['ACTIVE', Validators.required]
+      status: ['active', Validators.required]
     });
   }
 

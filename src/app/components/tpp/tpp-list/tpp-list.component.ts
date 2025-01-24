@@ -154,20 +154,19 @@ export class TPPListComponent implements OnInit {
       return;
     }
 
-    const deleteObservables = this.selection.selected.map(tpp => 
-      this.tppService.deleteTPP(tpp.tppId).pipe(
+    const selectedIds = this.selection.selected.map(tpp => tpp.tppId);
+    this.tppService.deleteTPPs(selectedIds)
+      .pipe(
         catchError(error => {
-          this.showError(`Failed to delete TPP ${tpp.tppName}`);
-          return of(null);
+          this.showError('Failed to delete selected TPPs');
+          return of(void 0);
         })
       )
-    );
-
-    forkJoin(deleteObservables).subscribe(() => {
-      this.loadTPPs();
-      this.selection.clear();
-      this.showSuccess('Selected TPPs deleted successfully');
-    });
+      .subscribe(() => {
+        this.loadTPPs();
+        this.selection.clear();
+        this.showSuccess('Selected TPPs deleted successfully');
+      });
   }
 
   applyFilter() {
