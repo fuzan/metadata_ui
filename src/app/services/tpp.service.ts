@@ -34,10 +34,15 @@ export class TPPService {
       ...tpp,
       updatedDate: new Date()
     };
-    return this.http.put<TPP>(`${this.apiUrl}/${tpp.tppId}`, updatedTPP);
+    return this.http.patch<TPP>(`${this.apiUrl}/${tpp.tppId}`, updatedTPP);
   }
 
   deleteTPP(tppId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${tppId}`);
+  }
+
+  // endpoint is /tppsBatch 
+  deleteTPPs(tppIds: string[]): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}Batch`, { body: { "tppIds": tppIds } });
   }
 } 

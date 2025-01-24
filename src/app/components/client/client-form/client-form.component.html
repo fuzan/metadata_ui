@@ -50,8 +50,8 @@
                     <mat-form-field>
                         <mat-label>Status</mat-label>
                         <mat-select formControlName="status">
-                            <mat-option value="ACTIVE">Active</mat-option>
-                            <mat-option value="INACTIVE">Inactive</mat-option>
+                            <mat-option value="active">Active</mat-option>
+                            <mat-option value="inactive">Inactive</mat-option>
                         </mat-select>
                     </mat-form-field>
 
@@ -89,12 +89,14 @@
                         (matChipInputTokenEnd)="addContact($event)">
                 </mat-form-field>
 
-
-
                 <div class="form-actions">
                     <button mat-button type="button" routerLink="/clients">Cancel</button>
                     <button mat-raised-button color="primary" type="submit" [disabled]="!clientForm.valid">
                         {{isEditMode ? 'Update' : 'Create'}}
+                    </button>
+                    <button mat-raised-button color="accent" type="button" (click)="generateSQL()"
+                        [disabled]="!clientForm.valid">
+                        Generate SQL
                     </button>
                 </div>
             </form>

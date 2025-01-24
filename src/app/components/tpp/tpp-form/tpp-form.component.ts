@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TPP } from '../../../models/tpp.model';
+import { TPP, TPPStatus } from '../../../models/tpp.model';
 import { TPPService } from '../../../services/tpp.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { SqlModalComponent } from '../sql-modal/sql-modal.component';
 
 @Component({
   selector: 'app-tpp-form',
@@ -20,16 +23,19 @@ import { of } from 'rxjs';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule,
+    MatDialogModule
   ]
 })
 export class TPPFormComponent implements OnInit {
   tppForm: FormGroup;
   isEditMode = false;
-  tppId?: string;
+  statusOptions = Object.values(TPPStatus);
   isLoading = false;
 
   constructor(
@@ -37,26 +43,87 @@ export class TPPFormComponent implements OnInit {
     private tppService: TPPService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.tppForm = this.fb.group({
-      name: ['', Validators.required],
-      tppDesc: ['', Validators.required]
+      tppId: ['', Validators.required],
+      tppName: ['', Validators.required],
+      tppType: ['', Validators.required],
+      verifiedClient: ['', Validators.required],
+      scopeNameList: ['', Validators.required],
+      tppDesc: [''],
+      contactName: ['', Validators.required],
+      contactEmail: ['', [Validators.required, Validators.email]],
+      status: [TPPStatus.ACTIVE, Validators.required],
+      createdDate: [new Date()],
+      createdBy: [''],
+      updatedBy: [''],
+      updatedDate: [new Date()]
     });
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    const tppId = this.route.snapshot.params['id'];
+    if (tppId) {
       this.isEditMode = true;
-      this.tppId = id;
-      this.loadTPP(this.tppId);
+      this.loadTPP(tppId);
     }
   }
 
-  loadTPP(id: string): void {
+  onSubmit(): void {
+    if (this.tppForm.valid) {
+      const tpp = this.tppForm.value;
+      if (this.isEditMode) {
+        this.tppService.updateTPP(tpp)
+          .pipe(
+            catchError(error => {
+              this.showError('Failed to update TPP');
+              return of(null);
+            })
+          )
+          .subscribe(result => {
+            if (result) {
+              this.showSuccess('TPP updated successfully');
+              this.router.navigate(['/tpps']);
+            }
+          });
+      } else {
+        this.tppService.createTPP(tpp)
+          .pipe(
+            catchError(error => {
+              this.showError('Failed to create TPP');
+              return of(null);
+            })
+          )
+          .subscribe(result => {
+            if (result) {
+              this.showSuccess('TPP created successfully');
+              this.router.navigate(['/tpps']);
+            }
+          });
+      }
+    }
+  }
+
+  generateSQL(): void {
+    const formValue = this.tppForm.value;
+    const dialogData = {
+      tppName: formValue.tppName,
+      tppDesc: formValue.tppDesc,
+      tppType: formValue.tppType,
+      createdDate: new Date()
+    };
+
+    this.dialog.open(SqlModalComponent, {
+      data: dialogData,
+      width: '600px'
+    });
+  }
+
+  private loadTPP(tppId: string): void {
     this.isLoading = true;
-    this.tppService.getTPP(id)
+    this.tppService.getTPP(tppId)
       .pipe(
         catchError(error => {
           this.showError('Failed to load TPP');
@@ -70,35 +137,6 @@ export class TPPFormComponent implements OnInit {
           this.tppForm.patchValue(tpp);
         }
       });
-  }
-
-  onSubmit(): void {
-    if (this.tppForm.valid) {
-      this.isLoading = true;
-      const tppData: TPP = {
-        ...this.tppForm.value,
-        id: this.tppId || 0
-      };
-
-      const operation = this.isEditMode
-        ? this.tppService.updateTPP(tppData)
-        : this.tppService.createTPP(tppData);
-
-      operation
-        .pipe(
-          catchError(error => {
-            this.showError(`Failed to ${this.isEditMode ? 'update' : 'create'} TPP`);
-            return of(null);
-          })
-        )
-        .subscribe(result => {
-          this.isLoading = false;
-          if (result) {
-            this.showSuccess(`TPP ${this.isEditMode ? 'updated' : 'created'} successfully`);
-            this.router.navigate(['/tpps']);
-          }
-        });
-    }
   }
 
   private showError(message: string): void {

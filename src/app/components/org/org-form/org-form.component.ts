@@ -50,7 +50,7 @@ export class OrgFormComponent implements OnInit {
       orgId: [''],
       orgName: ['', Validators.required],
       orgDesc: [''],
-      status: ['ACTIVE', Validators.required],
+      status: ['active', Validators.required],
       customerIdTypeCode: ['', Validators.required]
     });
   }

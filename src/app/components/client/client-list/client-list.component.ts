@@ -63,7 +63,7 @@ export class ClientListComponent implements OnInit {
     { value: 'tppId', label: 'TPP ID' },
     { value: 'status', label: 'Status' }
   ];
-  statusOptions = ['ACTIVE', 'INACTIVE'];
+  statusOptions = ['active', 'inactive'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

@@ -13,6 +13,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClientService } from '../../../services/client.service';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { SqlModalComponent } from '../sql-modal/sql-modal.component';
 
 
 @Component({
@@ -30,7 +32,8 @@ import { ClientService } from '../../../services/client.service';
     MatButtonModule,
     MatSelectModule,
     MatChipsModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ]
 })
 export class ClientFormComponent implements OnInit {
@@ -43,7 +46,8 @@ export class ClientFormComponent implements OnInit {
     private clientService: ClientService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.clientForm = this.fb.group({
       clientId: ['', Validators.required],
@@ -124,6 +128,21 @@ export class ClientFormComponent implements OnInit {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
       panelClass: ['success-snackbar']
+    });
+  }
+
+  generateSQL(): void {
+    const formValue = this.clientForm.value;
+    const dialogData = {
+      clientName: formValue.clientName,
+      clientDesc: formValue.clientDesc,
+      tppId: formValue.tppId,
+      createdDate: new Date()
+    };
+
+    this.dialog.open(SqlModalComponent, {
+      data: dialogData,
+      width: '600px'
     });
   }
 }

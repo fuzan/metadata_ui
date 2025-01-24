@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h2 mat-dialog-title>Generated SQL</h2>
+    <button mat-icon-button (click)="onClose()" class="close-button">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<mat-dialog-content>
+    <pre>
+INSERT INTO client (client_name, client_desc, tpp_id, created_date)
+VALUES (
+  '{{data.clientName}}',
+  '{{data.clientDesc}}',
+  '{{data.tppId}}',
+  '{{data.createdDate | date:'yyyy-MM-dd HH:mm:ss'}}'
+);</pre>
+    <button mat-raised-button color="primary" (click)="copyToClipboard()" class="paste-button">
+        <mat-icon>content_paste</mat-icon>
+        Copy to Clipboard
+    </button>
+</mat-dialog-content>

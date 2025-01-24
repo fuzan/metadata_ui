@@ -1,25 +1,100 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>{{ isEditMode ? 'Edit TPP' : 'Create New TPP' }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <form [formGroup]="tppForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="fill">
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="name" required>
-            </mat-form-field>
+<div class="tpp-form-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{isEditMode ? 'Edit' : 'Create'}} TPP</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="tppForm" (ngSubmit)="onSubmit()">
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>TPP ID</mat-label>
+                        <input matInput formControlName="tppId" [readonly]="isEditMode">
+                        <mat-error *ngIf="tppForm.get('tppId')?.hasError('required')">
+                            TPP ID is required
+                        </mat-error>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Description</mat-label>
-                <input matInput formControlName="tppDesc" required>
-            </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>TPP Name</mat-label>
+                        <input matInput formControlName="tppName">
+                        <mat-error *ngIf="tppForm.get('tppName')?.hasError('required')">
+                            TPP Name is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
 
-            <div class="form-actions">
-                <button mat-raised-button color="primary" type="submit" [disabled]="!tppForm.valid">
-                    {{ isEditMode ? 'Update' : 'Create' }}
-                </button>
-                <button mat-button type="button" routerLink="/tpps">Cancel</button>
-            </div>
-        </form>
-    </mat-card-content>
-</mat-card>
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>TPP Type</mat-label>
+                        <input matInput formControlName="tppType">
+                        <mat-error *ngIf="tppForm.get('tppType')?.hasError('required')">
+                            TPP Type is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Verified Client</mat-label>
+                        <input matInput formControlName="verifiedClient">
+                        <mat-error *ngIf="tppForm.get('verifiedClient')?.hasError('required')">
+                            Verified Client is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Scope Name List</mat-label>
+                    <input matInput formControlName="scopeNameList">
+                    <mat-error *ngIf="tppForm.get('scopeNameList')?.hasError('required')">
+                        Scope Name List is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="tppDesc" rows="3"></textarea>
+                </mat-form-field>
+
+                <div class="form-row">
+                    <mat-form-field>
+                        <mat-label>Contact Name</mat-label>
+                        <input matInput formControlName="contactName">
+                        <mat-error *ngIf="tppForm.get('contactName')?.hasError('required')">
+                            Contact Name is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Contact Email</mat-label>
+                        <input matInput formControlName="contactEmail" type="email">
+                        <mat-error *ngIf="tppForm.get('contactEmail')?.hasError('required')">
+                            Contact Email is required
+                        </mat-error>
+                        <mat-error *ngIf="tppForm.get('contactEmail')?.hasError('email')">
+                            Please enter a valid email address
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let status of statusOptions" [value]="status">
+                            {{status}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="form-actions">
+                    <button mat-button type="button" routerLink="/tpps">Cancel</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!tppForm.valid">
+                        {{isEditMode ? 'Update' : 'Create'}}
+                    </button>
+                    <button mat-raised-button color="accent" type="button" (click)="generateSQL()"
+                        [disabled]="!tppForm.valid">
+                        Generate SQL
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
