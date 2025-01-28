@@ -7,8 +7,15 @@
 }
 
 mat-card {
-    width: 100%;
-    max-width: 400px;
+    width: 800px;
+    height: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
 }
 
 form {

@@ -47,7 +47,7 @@ export class OrgFormComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.orgForm = this.fb.group({
-      orgId: [''],
+      orgId: [null],
       orgName: ['', Validators.required],
       orgDesc: [''],
       status: ['active', Validators.required],
@@ -82,6 +82,18 @@ export class OrgFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.orgForm.invalid) {
+      this.showError('Organization ID is required');
+      return;
+    }
+
+    if (!this.isEditMode && !this.orgForm.value.orgId) {
+      // Generate a random orgId if it's empty or null during creation
+      this.orgForm.patchValue({
+        orgId: `org-${Math.random().toString(36).substr(2, 9)}`
+      });
+    }
+
     if (this.orgForm.valid) {
       this.isLoading = true;
       const orgData = this.orgForm.value;

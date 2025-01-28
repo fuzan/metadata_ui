@@ -1,0 +1,44 @@
+.client-org-form-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+mat-card {
+    margin-bottom: 20px;
+}
+
+mat-card-header {
+    margin-bottom: 20px;
+}
+
+mat-card-title {
+    color: #1976d2;
+    font-size: 24px;
+}
+
+.form-row {
+    margin-bottom: 20px;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    height: 20px;
+} 

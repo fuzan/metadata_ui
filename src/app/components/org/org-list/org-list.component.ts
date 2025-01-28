@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, NgZone, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -40,7 +40,7 @@ import { of } from 'rxjs';
     FormsModule
   ]
 })
-export class OrgListComponent implements OnInit {
+export class OrgListComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<Org>([]);
   selection = new SelectionModel<Org>(true, []);
   displayedColumns: string[] = [
@@ -62,12 +62,21 @@ export class OrgListComponent implements OnInit {
     { value: 'customerIdTypeCode', label: 'Customer ID Type Code' }
   ];
   statusOptions = Object.values(OrgStatus);
+  private isResizing = false;
+  private currentResizeIndex: number = -1;
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private table: HTMLElement | null = null;
+  private pressed = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('tableContainer') tableContainer!: ElementRef;
 
   constructor(
     private orgService: OrgService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private ngZone: NgZone,
+    private el: ElementRef
   ) {
     this.dataSource.filterPredicate = (data: Org, filter: string) => {
       const filterObj = JSON.parse(filter);
@@ -83,6 +92,77 @@ export class OrgListComponent implements OnInit {
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
+    setTimeout(() => {
+      this.setupResizeListeners();
+    });
+  }
+
+  ngOnDestroy() {
+    this.removeResizeListeners();
+  }
+
+  private setupResizeListeners() {
+    this.table = this.el.nativeElement.querySelector('mat-table');
+    
+    if (this.table) {
+      document.addEventListener('mousemove', this.onMouseMove.bind(this));
+      document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    }
+  }
+
+  private removeResizeListeners() {
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
+  }
+
+  onResizeColumn(event: MouseEvent, index: number) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.pressed = true;
+    this.isResizing = true;
+    this.currentResizeIndex = index;
+    this.startX = event.pageX;
+
+    const headerRow = this.table?.querySelector('mat-header-row');
+    if (headerRow) {
+      const headerCell = headerRow.children[index] as HTMLElement;
+      this.startWidth = headerCell.offsetWidth;
+    }
+  }
+
+  private onMouseMove = (event: MouseEvent) => {
+    if (!this.pressed || !this.isResizing) return;
+
+    this.ngZone.runOutsideAngular(() => {
+      const headerRow = this.table?.querySelector('mat-header-row');
+      if (headerRow) {
+        const headerCell = headerRow.children[this.currentResizeIndex] as HTMLElement;
+        if (headerCell) {
+          const width = Math.max(this.startWidth + (event.pageX - this.startX), 100);
+          const columnClass = `mat-column-${this.displayedColumns[this.currentResizeIndex]}`;
+          
+          // Update header cell width
+          headerCell.style.width = `${width}px`;
+          headerCell.style.minWidth = `${width}px`;
+          
+          // Update all body cells in the same column
+          const cells = this.table?.querySelectorAll(`.${columnClass}`);
+          cells?.forEach((cell: Element) => {
+            (cell as HTMLElement).style.width = `${width}px`;
+            (cell as HTMLElement).style.minWidth = `${width}px`;
+          });
+        }
+      }
+    });
+  }
+
+  private onMouseUp = () => {
+    if (this.isResizing) {
+      this.isResizing = false;
+      this.pressed = false;
+      this.currentResizeIndex = -1;
+    }
   }
 
   loadOrgs(): void {

@@ -29,9 +29,12 @@
     width: 200px;
 }
 
-mat-table {
-    width: 100%;
-    margin-bottom: 20px;
+.table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: calc(100vh - 300px);
+    overflow: auto;
+    border-radius: 4px;
 }
 
 .loading-spinner {
@@ -108,4 +111,60 @@ mat-paginator {
 
 mat-row:hover {
     background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Resizable columns styles */
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    cursor: col-resize;
+    background-color: rgba(0, 0, 0, 0.12);
+    border-left-color: #1976d2;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.resize-handle:active {
+    background-color: rgba(0, 0, 0, 0.24);
+    border-left-color: #0d47a1;
+}
+
+/* Make header row sticky */
+.mat-mdc-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: inherit;
+}
+
+/* Prevent text selection while resizing */
+.mat-mdc-table {
+    user-select: none;
+}
+
+/* Add hover effect to rows */
+.mat-mdc-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Style for action buttons */
+.mat-column-actions button {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.mat-column-actions button:hover {
+    opacity: 1;
+}
+
+.mat-mdc-header-cell {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px;
+    position: relative;
+    user-select: none;
 } 

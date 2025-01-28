@@ -1,0 +1,123 @@
+<div class="client-org-list-container">
+    <div class="list-header">
+        <h2>Client Organizations</h2>
+        <div class="header-actions">
+            <button mat-raised-button color="warn" [disabled]="!selection.hasValue()"
+                (click)="deleteSelectedClientOrgs()">
+                <mat-icon>delete</mat-icon>
+                Delete Selected
+            </button>
+            <button mat-raised-button color="primary" routerLink="/client-orgs/new">
+                <mat-icon>add</mat-icon>
+                Add New Client Organization
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="filter-container">
+        <mat-form-field appearance="outline">
+            <mat-label>Filter By</mat-label>
+            <mat-select [(ngModel)]="filterColumn" (selectionChange)="filterValue=''; applyFilter()">
+                <mat-option *ngFor="let column of filterColumns" [value]="column.value">
+                    {{column.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="filterColumn === 'status'">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="filterValue" (selectionChange)="applyFilter()">
+                <mat-option *ngFor="let status of statusOptions" [value]="status">
+                    {{status}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="filterColumn !== 'status'">
+            <mat-label>Filter Value</mat-label>
+            <input matInput [(ngModel)]="filterValue" (keyup)="applyFilter()">
+            <button mat-icon-button matSuffix (click)="clearFilter()" *ngIf="filterValue">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+
+    <mat-table [dataSource]="dataSource">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Client Org ID Column -->
+        <ng-container matColumnDef="clientOrgId">
+            <mat-header-cell *matHeaderCellDef>Client Org ID</mat-header-cell>
+            <mat-cell *matCellDef="let clientOrg">{{clientOrg.clientOrgId}}</mat-cell>
+        </ng-container>
+
+        <!-- Client Column -->
+        <ng-container matColumnDef="client">
+            <mat-header-cell *matHeaderCellDef>Client</mat-header-cell>
+            <mat-cell *matCellDef="let clientOrg">
+                <a [routerLink]="['/clients', clientOrg.client.clientId, 'edit']" class="link">
+                    {{clientOrg.client.clientName}}
+                </a>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Organization Column -->
+        <ng-container matColumnDef="org">
+            <mat-header-cell *matHeaderCellDef>Organization</mat-header-cell>
+            <mat-cell *matCellDef="let clientOrg">
+                <a [routerLink]="['/orgs', clientOrg.org.orgId, 'edit']" class="link">
+                    {{clientOrg.org.orgName}}
+                </a>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let clientOrg">
+                <span [class]="'status-badge ' + clientOrg.status.toLowerCase()">
+                    {{clientOrg.status}}
+                </span>
+            </mat-cell>
+
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let clientOrg">
+                <button mat-icon-button [routerLink]="['/client-orgs', clientOrg.clientOrgId, 'edit']"
+                    matTooltip="Edit">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteClientOrg(clientOrg.clientOrgId)" matTooltip="Delete">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Select page">
+    </mat-paginator>
+
+    <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+</div>

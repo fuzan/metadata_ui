@@ -1,0 +1,114 @@
+.client-org-list-container {
+    padding: 20px;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.list-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #1976d2;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-container {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+mat-form-field {
+    width: 200px;
+}
+
+mat-table {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mat-column-select {
+    width: 50px;
+    padding-left: 8px;
+}
+
+.mat-column-actions {
+    width: 100px;
+    text-align: center;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+mat-header-cell {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+mat-cell {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+mat-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.mat-column-clientOrgId {
+    flex: 0 0 120px;
+}
+
+.mat-column-client {
+    flex: 1;
+}
+
+.mat-column-org {
+    flex: 1;
+}
+
+.mat-column-status {
+    flex: 0 0 100px;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.inactive {
+    background-color: #b42626;
+    color: #f1f1f1;
+}
+
+.mat-checkbox {
+    margin: 0;
+}
+
+.link {
+    color: #1976d2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline;
+    color: #1565c0;
+} 

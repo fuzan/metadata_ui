@@ -34,7 +34,7 @@ export class ScopeService {
       ...scope,
       updatedDate: new Date()
     };
-    return this.http.put<Scope>(`${this.apiUrl}/${scope.scopeName}`, updatedScope);
+    return this.http.patch<Scope>(`${this.apiUrl}/${scope.scopeName}`, updatedScope);
   }
 
   deleteScope(id: string): Observable<void> {

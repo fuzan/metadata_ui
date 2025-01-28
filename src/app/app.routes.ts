@@ -86,5 +86,20 @@ export const routes: Routes = [
     path: 'orgs/:id/edit', 
     loadComponent: () => import('./components/org/org-form/org-form.component').then(m => m.OrgFormComponent),
     canActivate: [authGuard, environmentGuard]
+  },
+  { 
+    path: 'client-orgs', 
+    loadComponent: () => import('./components/client-org/client-org-list/client-org-list.component').then(m => m.ClientOrgListComponent),
+    canActivate: [authGuard, environmentGuard]
+  },
+  { 
+    path: 'client-orgs/new', 
+    loadComponent: () => import('./components/client-org/client-org-form/client-org-form.component').then(m => m.ClientOrgFormComponent),
+    canActivate: [authGuard, environmentGuard]
+  },
+  { 
+    path: 'client-orgs/:id/edit', 
+    loadComponent: () => import('./components/client-org/client-org-form/client-org-form.component').then(m => m.ClientOrgFormComponent),
+    canActivate: [authGuard, environmentGuard]
   }
 ]; 
