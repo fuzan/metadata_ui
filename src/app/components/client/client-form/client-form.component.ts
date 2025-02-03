@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClientService } from '../../../services/client.service';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { SqlModalComponent } from '../sql-modal/sql-modal.component';
+import { SuccessModalComponent } from '../success-modal/success-modal.component';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class ClientFormComponent implements OnInit {
   clientForm: FormGroup;
   isEditMode = false;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  isCloning = false;
 
   constructor(
     private fb: FormBuilder,
@@ -143,6 +145,23 @@ export class ClientFormComponent implements OnInit {
     this.dialog.open(SqlModalComponent, {
       data: dialogData,
       width: '600px'
+    });
+  }
+
+  cloneClient(): void {
+    this.isCloning = true;
+    const clonedClient = { ...this.clientForm.value, clientId: `client-${Math.random().toString(36).substr(2, 9)}` };
+    this.clientService.createClient(clonedClient).subscribe(() => {
+      this.isCloning = false;
+      this.showSuccess('Client cloned successfully');
+      this.dialog.open(SuccessModalComponent, {
+        data: { message: 'Client cloned successfully!' },
+        width: '400px'
+      });
+      this.router.navigate(['/clients']);
+    }, () => {
+      this.isCloning = false;
+      this.showError('Failed to clone client');
     });
   }
 }
