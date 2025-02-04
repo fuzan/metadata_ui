@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Scope } from '../models/scope.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,10 @@ export class ScopeService {
   constructor(private http: HttpClient) { }
 
   getScopes(): Observable<Scope[]> {
-    return this.http.get<Scope[]>(this.apiUrl);
+    // return this.http.get<Scope[]>(this.apiUrl);
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => this.convertResponseToScope(response))
+    );
   }
 
   getScope(id: string): Observable<Scope> {
@@ -43,5 +47,15 @@ export class ScopeService {
 
   deleteScopes(ids: string[]): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/batch`, { body: ids });
+  }
+
+  convertResponseToScope(response: any): Scope[] {
+    return response?.status === 'success' && Array.isArray(response.content)
+      ? response.content.map((item: any) => ({
+          scopeName: item?.scopeName ?? '',
+          mappingUrl: item?.mappingURLList ?? '',
+          scopeDesc: item?.scopeDesc ?? ''
+        }))
+      : [];
   }
 } 

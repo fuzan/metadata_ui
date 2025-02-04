@@ -20,6 +20,11 @@
                 </mat-error>
             </mat-form-field>
 
+            <mat-form-field appearance="fill">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="scopeDesc" rows="3"></textarea>
+            </mat-form-field>
+
             <div class="form-actions">
                 <button mat-raised-button color="primary" type="submit" [disabled]="!scopeForm.valid || isLoading">
                     {{ isEditMode ? 'Update' : 'Create' }}

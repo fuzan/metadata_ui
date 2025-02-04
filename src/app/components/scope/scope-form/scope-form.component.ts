@@ -43,7 +43,8 @@ export class ScopeFormComponent implements OnInit {
   ) {
     this.scopeForm = this.fb.group({
       scopeName: ['', Validators.required],
-      mappingUrl: ['', Validators.required]
+      mappingUrl: ['', Validators.required],
+      scopeDesc: ['']
     });
   }
 
