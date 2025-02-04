@@ -20,6 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-client-list',
@@ -40,10 +41,13 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
     MatSelectModule,
     MatInputModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    NgxPaginationModule
   ]
 })
 export class ClientListComponent implements OnInit {
+  page: number = 1;
+  itemsPerPage: number = 10;
   dataSource = new MatTableDataSource<Client>([]);
   selection = new SelectionModel<Client>(true, []);
   displayedColumns: string[] = [
@@ -85,10 +89,6 @@ export class ClientListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadClients();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 
   loadClients(): void {
