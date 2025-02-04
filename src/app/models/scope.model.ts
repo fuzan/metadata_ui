@@ -1,6 +1,5 @@
-import { BaseEntity } from './base-entity.model';
-
-export interface Scope extends BaseEntity {
+export interface Scope {
     scopeName: string;
     mappingUrl: string;
+    scopeDesc: string;
 } 

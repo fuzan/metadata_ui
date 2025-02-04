@@ -9,19 +9,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TppOrgStatus } from '../../../models/tpp-org.model';
-import { TPP } from '../../../models/tpp.model';
+import { ClientOrgStatus } from '../../../models/client-org.model';
+import { Client } from '../../../models/client.model';
 import { Org } from '../../../models/org.model';
-import { TppOrgService } from '../../../services/tpp-org.service';
-import { TPPService } from '../../../services/tpp.service';
+import { ClientOrgService } from '../../../services/client-org.service';
+import { ClientService } from '../../../services/client.service';
 import { OrgService } from '../../../services/org.service';
 import { catchError, forkJoin } from 'rxjs';
 import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-tpp-org-form',
-  templateUrl: './tpp-org-form.component.html',
-  styleUrls: ['./tpp-org-form.component.css'],
+  selector: 'app-client-org-form',
+  templateUrl: './client-org-form.component.html',
+  styleUrls: ['./client-org-form.component.css'],
   standalone: true,
   imports: [
     CommonModule,
@@ -35,27 +35,27 @@ import { of } from 'rxjs';
     MatProgressSpinnerModule
   ]
 })
-export class TppOrgFormComponent implements OnInit {
-  tppOrgForm: FormGroup;
+export class ClientOrgFormComponent implements OnInit {
+  clientOrgForm: FormGroup;
   isEditMode = false;
   isLoading = false;
-  tpps: TPP[] = [];
+  clients: Client[] = [];
   orgs: Org[] = [];
-  statusOptions = Object.values(TppOrgStatus);
+  statusOptions = Object.values(ClientOrgStatus);
 
   constructor(
     private fb: FormBuilder,
-    private tppOrgService: TppOrgService,
-    private tppService: TPPService,
+    private clientOrgService: ClientOrgService,
+    private clientService: ClientService,
     private orgService: OrgService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    this.tppOrgForm = this.fb.group({
-      tppOrgId: [null],
-      tpp: [null, Validators.required],
-      org: [null, Validators.required],
+    this.clientOrgForm = this.fb.group({
+      clientOrgId: [null],
+      client: ['', Validators.required],
+      org: ['', Validators.required],
       status: ['active', Validators.required]
     });
   }
@@ -63,47 +63,47 @@ export class TppOrgFormComponent implements OnInit {
   ngOnInit(): void {
     this.loadSelectOptions();
 
-    const tppOrgId = this.route.snapshot.paramMap.get('id');
-    if (tppOrgId) {
+    const clientOrgId = this.route.snapshot.paramMap.get('id');
+    if (clientOrgId) {
       this.isEditMode = true;
-      this.loadTppOrg(tppOrgId);
+      this.loadClientOrg(clientOrgId);
     }
   }
 
   loadSelectOptions(): void {
     this.isLoading = true;
     forkJoin({
-      tpps: this.tppService.getTPPs(),
+      clients: this.clientService.getClients(),
       orgs: this.orgService.getOrgs()
     }).pipe(
       catchError(error => {
         this.showError('Failed to load form options');
-        return of({ tpps: [], orgs: [] });
+        return of({ clients: [], orgs: [] });
       })
     ).subscribe(result => {
-      this.tpps = result.tpps;
+      this.clients = result.clients;
       this.orgs = result.orgs;
       this.isLoading = false;
     });
   }
 
-  loadTppOrg(tppOrgId: string): void {
+  loadClientOrg(clientOrgId: string): void {
     this.isLoading = true;
-    this.tppOrgService.getTppOrg(tppOrgId)
+    this.clientOrgService.getClientOrg(clientOrgId)
       .pipe(
         catchError(error => {
-          this.showError('Failed to load TPP organization');
-          this.router.navigate(['/tpp-orgs']);
+          this.showError('Failed to load client organization');
+          this.router.navigate(['/client-orgs']);
           return of(null);
         })
       )
-      .subscribe(tppOrg => {
-        if (tppOrg) {
-          this.tppOrgForm.patchValue({
-            tppOrgId: tppOrg.tppOrgId,
-            tpp: tppOrg.tpp,
-            org: tppOrg.org,
-            status: tppOrg.status
+      .subscribe(clientOrg => {
+        if (clientOrg) {
+          this.clientOrgForm.patchValue({
+            clientOrgId: clientOrg.clientOrgId,
+            client: clientOrg.client,
+            org: clientOrg.org,
+            status: clientOrg.status
           });
         }
         this.isLoading = false;
@@ -111,51 +111,41 @@ export class TppOrgFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.tppOrgForm.invalid) {
-      this.showError('TPP Organization ID is required');
-      return;
-    }
-
-    if (!this.isEditMode && !this.tppOrgForm.value.tppOrgId) {
-        const tppOrgData = this.tppOrgForm.value;
-        console.log('tppOrgData', tppOrgData);
-        // Generate a fake tppOrgId if it's empty or null during creation
-        this.tppOrgForm.patchValue({
-            tppOrgId: `${tppOrgData.tpp.tppId}_${tppOrgData.org.orgId}-${Math.random().toString(36).substr(2, 9)}`
-        });
-    }
-
-    if (this.tppOrgForm.valid) {
+    if (this.clientOrgForm.valid) {
       this.isLoading = true;
-      const tppOrgData = this.tppOrgForm.value;
+      const clientOrgData = this.clientOrgForm.value;
+
+      // Generate a unique ID for new client-org if not in edit mode
+      if (!this.isEditMode && !clientOrgData.clientOrgId) {
+        clientOrgData.clientOrgId = `${clientOrgData.client.clientId}_${clientOrgData.org.orgId}`;
+      }
 
       const operation = this.isEditMode
-        ? this.tppOrgService.updateTppOrg(tppOrgData)
-        : this.tppOrgService.createTppOrg(tppOrgData);
+        ? this.clientOrgService.updateClientOrg(clientOrgData)
+        : this.clientOrgService.createClientOrg(clientOrgData);
 
       operation
         .pipe(
           catchError(error => {
-            this.showError(`Failed to ${this.isEditMode ? 'update' : 'create'} TPP organization`);
+            this.showError(error.message || `Failed to ${this.isEditMode ? 'update' : 'create'} client organization`);
             return of(null);
           })
         )
         .subscribe(result => {
           this.isLoading = false;
           if (result) {
-            this.showSuccess(`TPP organization ${this.isEditMode ? 'updated' : 'created'} successfully`);
-            this.router.navigate(['/tpp-orgs']);
+            this.showSuccess(`Client organization ${this.isEditMode ? 'updated' : 'created'} successfully`);
+            this.router.navigate(['/client-orgs']);
           }
         });
     }
   }
 
-  compareTpp(tpp1: TPP, tpp2: TPP): boolean {
-    return tpp1?.tppId === tpp2?.tppId;
-  }
-
-  compareOrg(org1: Org, org2: Org): boolean {
-    return org1?.orgId === org2?.orgId;
+  compareObjects(o1: any, o2: any): boolean {
+    if (o1 && o2) {
+      return o1.id === o2.id;
+    }
+    return o1 === o2;
   }
 
   private showError(message: string): void {

@@ -35,6 +35,12 @@
             <mat-cell *matCellDef="let scope">{{scope.scopeName}}</mat-cell>
         </ng-container>
 
+        <!-- Description Column -->
+        <ng-container matColumnDef="scopeDesc">
+            <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+            <mat-cell *matCellDef="let scope">{{scope.scopeDesc}}</mat-cell>
+        </ng-container>
+
         <!-- Mapping URL Column -->
         <ng-container matColumnDef="mappingUrl">
             <mat-header-cell *matHeaderCellDef>Mapping URL</mat-header-cell>

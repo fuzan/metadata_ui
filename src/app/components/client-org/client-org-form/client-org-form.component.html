@@ -1,0 +1,72 @@
+<div class="client-org-form-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} Client Organization</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+            <form [formGroup]="clientOrgForm" (ngSubmit)="onSubmit()">
+                <div class="form-row" *ngIf="isEditMode">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Client Organization ID</mat-label>
+                        <input matInput formControlName="clientOrgId" readonly>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Client</mat-label>
+                        <mat-select formControlName="client" [compareWith]="compareObjects">
+                            <mat-option *ngFor="let client of clients" [value]="client">
+                                {{client.clientName}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="clientOrgForm.get('client')?.hasError('required')">
+                            Client is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Organization</mat-label>
+                        <mat-select formControlName="org" [compareWith]="compareObjects">
+                            <mat-option *ngFor="let org of orgs" [value]="org">
+                                {{org.orgName}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="clientOrgForm.get('org')?.hasError('required')">
+                            Organization is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Status</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option *ngFor="let status of statusOptions" [value]="status">
+                                {{status}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="clientOrgForm.get('status')?.hasError('required')">
+                            Status is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-actions">
+                    <button mat-button type="button" routerLink="/client-orgs">Cancel</button>
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="!clientOrgForm.valid || isLoading">
+                        {{ isEditMode ? 'Update' : 'Create' }}
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+</div>

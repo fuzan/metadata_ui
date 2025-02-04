@@ -8,24 +8,23 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Client } from '../../../models/client.model';
-import { ClientService } from '../../../services/client.service';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { SelectionModel } from '@angular/cdk/collections';
+import { ClientOrg, ClientOrgStatus } from '../../../models/client-org.model';
+import { ClientOrgService } from '../../../services/client-org.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
-import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
-  selector: 'app-client-list',
-  templateUrl: './client-list.component.html',
-  styleUrls: ['./client-list.component.css'],
+  selector: 'app-client-org-list',
+  templateUrl: './client-org-list.component.html',
+  styleUrls: ['./client-org-list.component.css'],
   standalone: true,
   imports: [
     CommonModule,
@@ -41,76 +40,82 @@ import { NgxPaginationModule } from 'ngx-pagination';
     MatSelectModule,
     MatInputModule,
     FormsModule,
-    MatDialogModule,
-    NgxPaginationModule
+    MatDialogModule
   ]
 })
-export class ClientListComponent implements OnInit {
-  page: number = 1;
-  itemsPerPage: number = 10;
-  dataSource = new MatTableDataSource<Client>([]);
-  selection = new SelectionModel<Client>(true, []);
+export class ClientOrgListComponent implements OnInit {
+  dataSource = new MatTableDataSource<ClientOrg>([]);
+  selection = new SelectionModel<ClientOrg>(true, []);
   displayedColumns: string[] = [
     'select',
-    'clientId',
-    'clientName',
-    'clientDesc',
-    'tppId',
+    'clientOrgId',
+    'client',
+    'org',
     'status',
-    'uri',
-    'logoUri',
-    'contacts',
     'actions'
   ];
   isLoading = false;
-  filterColumn = 'clientName';
+  filterColumn = 'client.clientName';
   filterValue = '';
   filterColumns = [
-    { value: 'clientName', label: 'Client Name' },
-    { value: 'tppId', label: 'TPP ID' },
+    { value: 'client.clientName', label: 'Client Name' },
+    { value: 'org.orgName', label: 'Organization Name' },
     { value: 'status', label: 'Status' }
   ];
-  statusOptions = ['active', 'inactive'];
+  statusOptions = Object.values(ClientOrgStatus);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
-    private clientService: ClientService,
+    private clientOrgService: ClientOrgService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {
-    this.dataSource.filterPredicate = (data: Client, filter: string) => {
+    this.dataSource.filterPredicate = (data: ClientOrg, filter: string) => {
       const filterObj = JSON.parse(filter);
-      const column = filterObj.column as keyof Client;
-      const value = String(data[column] || '').toLowerCase();
-      return value.includes(filterObj.value.toLowerCase());
+      const value = filterObj.value.toLowerCase();
+      
+      switch (filterObj.column) {
+        case 'client.clientName':
+          return data.client.clientName.toLowerCase().includes(value);
+        case 'org.orgName':
+          return data.org.orgName.toLowerCase().includes(value);
+        case 'status':
+          return data.status.toLowerCase().includes(value);
+        default:
+          return false;
+      }
     };
   }
 
   ngOnInit(): void {
-    this.loadClients();
+    this.loadClientOrgs();
   }
 
-  loadClients(): void {
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadClientOrgs(): void {
     this.isLoading = true;
-    this.clientService.getClients()
+    this.clientOrgService.getClientOrgs()
       .pipe(
         catchError(error => {
-          this.showError('Failed to load clients');
+          this.showError('Failed to load client organizations');
           return of([]);
         })
       )
-      .subscribe(clients => {
+      .subscribe(clientOrgs => {
         this.isLoading = false;
-        this.dataSource.data = clients;
+        this.dataSource.data = clientOrgs;
       });
   }
 
-  deleteClient(id: string): void {
+  deleteClientOrg(clientOrgId: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this client?',
+        message: 'Are you sure you want to delete this client organization?',
         confirmText: 'Delete',
         cancelText: 'Cancel'
       }
@@ -118,16 +123,50 @@ export class ClientListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.clientService.deleteClient(id)
+        this.clientOrgService.deleteClientOrg(clientOrgId)
           .pipe(
             catchError(error => {
-              this.showError('Failed to delete client');
+              this.showError('Failed to delete client organization');
               return of(void 0);
             })
           )
           .subscribe(() => {
-            this.loadClients();
-            this.showSuccess('Client deleted successfully');
+            this.loadClientOrgs();
+            this.showSuccess('Client organization deleted successfully');
+          });
+      }
+    });
+  }
+
+  deleteSelectedClientOrgs(): void {
+    if (this.selection.selected.length === 0) {
+      this.showError('Please select client organizations to delete');
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirm Batch Delete',
+        message: `Are you sure you want to delete ${this.selection.selected.length} selected client organizations?`,
+        confirmText: 'Delete All',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const selectedIds = this.selection.selected.map(clientOrg => clientOrg.clientOrgId);
+        this.clientOrgService.deleteClientOrgs(selectedIds)
+          .pipe(
+            catchError(error => {
+              this.showError('Failed to delete selected client organizations');
+              return of(void 0);
+            })
+          )
+          .subscribe(() => {
+            this.loadClientOrgs();
+            this.selection.clear();
+            this.showSuccess('Selected client organizations deleted successfully');
           });
       }
     });
@@ -159,40 +198,6 @@ export class ClientListComponent implements OnInit {
       return;
     }
     this.selection.select(...this.dataSource.data);
-  }
-
-  deleteSelectedClients(): void {
-    const selectedIds = this.selection.selected.map(client => client.clientId);
-    if (selectedIds.length === 0) {
-      this.showError('Please select clients to delete');
-      return;
-    }
-
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Confirm Batch Delete',
-        message: `Are you sure you want to delete ${selectedIds.length} selected clients?`,
-        confirmText: 'Delete All',
-        cancelText: 'Cancel'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.clientService.deleteClients(selectedIds)
-          .pipe(
-            catchError(error => {
-              this.showError('Failed to delete selected clients');
-              return of(void 0);
-            })
-          )
-          .subscribe(() => {
-            this.loadClients();
-            this.selection.clear();
-            this.showSuccess('Selected clients deleted successfully');
-          });
-      }
-    });
   }
 
   applyFilter() {

@@ -34,7 +34,7 @@ export class OrgService {
       ...org,
       updatedDate: new Date()
     };
-    return this.http.put<Org>(`${this.apiUrl}/${org.orgId}`, updatedOrg);
+    return this.http.patch<Org>(`${this.apiUrl}/${org.orgId}`, updatedOrg);
   }
 
   deleteOrg(orgId: string): Observable<void> {
@@ -42,6 +42,6 @@ export class OrgService {
   }
 
   deleteOrgs(orgIds: string[]): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/batch`, { body: { "orgIds": orgIds } });
+    return this.http.delete<void>(`${this.apiUrl}Batch`, { body: { "orgIds": orgIds } });
   }
 } 

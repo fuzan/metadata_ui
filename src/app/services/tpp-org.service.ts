@@ -34,7 +34,7 @@ export class TppOrgService {
       ...tppOrg,
       updatedDate: new Date()
     };
-    return this.http.put<TppOrg>(`${this.apiUrl}/${tppOrg.tppOrgId}`, updatedTppOrg);
+    return this.http.patch<TppOrg>(`${this.apiUrl}/${tppOrg.tppOrgId}`, updatedTppOrg);
   }
 
   deleteTppOrg(tppOrgId: string): Observable<void> {
@@ -42,6 +42,6 @@ export class TppOrgService {
   }
 
   deleteTppOrgs(tppOrgIds: string[]): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/batch`, { body: { "tppOrgIds": tppOrgIds } });
+    return this.http.delete<void>(`${this.apiUrl}Batch`, { body: { "tppOrgIds": tppOrgIds } });
   }
 } 

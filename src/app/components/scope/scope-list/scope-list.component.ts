@@ -39,6 +39,7 @@ export class ScopeListComponent implements OnInit {
     'select',
     'scopeName',
     'mappingUrl',
+    'scopeDesc',
     'actions'
   ];
   isLoading = false;

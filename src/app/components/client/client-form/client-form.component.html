@@ -98,6 +98,9 @@
                         [disabled]="!clientForm.valid">
                         Generate SQL
                     </button>
+                    <button *ngIf="isEditMode" mat-raised-button color="warn" type="button" (click)="cloneClient()">
+                        Clone
+                    </button>
                 </div>
             </form>
         </mat-card-content>

@@ -122,7 +122,7 @@
         <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
             <mat-cell *matCellDef="let tpp">
-                <span [class]="'status-badge ' + tpp.status">
+                <span [class]="'status-badge ' + tpp.status.toLowerCase()">
                     {{tpp.status}}
                 </span>
             </mat-cell>
