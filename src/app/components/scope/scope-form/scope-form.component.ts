@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { Scope } from '../../../models/scope.model';
 import { ScopeService } from '../../../services/scope.service';
 import { catchError } from 'rxjs/operators';
@@ -21,11 +23,13 @@ import { of } from 'rxjs';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
   ]
 })
 export class ScopeFormComponent implements OnInit {
@@ -43,7 +47,7 @@ export class ScopeFormComponent implements OnInit {
   ) {
     this.scopeForm = this.fb.group({
       scopeName: ['', Validators.required],
-      mappingUrl: ['', Validators.required],
+      mappingURLList: ['', Validators.required],
       scopeDesc: ['']
     });
   }

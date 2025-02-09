@@ -1,5 +1,5 @@
 export interface Scope {
     scopeName: string;
-    mappingUrl: string;
+    mappingURLList: string;
     scopeDesc: string;
 } 

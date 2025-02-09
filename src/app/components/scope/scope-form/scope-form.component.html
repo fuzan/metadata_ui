@@ -14,8 +14,8 @@
 
             <mat-form-field appearance="fill">
                 <mat-label>Mapping URL</mat-label>
-                <input matInput formControlName="mappingUrl" required>
-                <mat-error *ngIf="scopeForm.get('mappingUrl')?.hasError('required')">
+                <input matInput formControlName="mappingURLList" required>
+                <mat-error *ngIf="scopeForm.get('mappingURLList')?.hasError('required')">
                     Mapping URL is required
                 </mat-error>
             </mat-form-field>
