@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Client } from '../models/client.model';
 import { environment } from '../../environments/environment';
+import { ApiResponse, SUCCESS_STATUS } from '../models/api-response.model';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,10 @@ export class ClientService {
   constructor(private http: HttpClient) { }
 
   getClients(): Observable<Client[]> {
-    return this.http.get<Client[]>(this.apiUrl);
+    return this.http.get<ApiResponse<Client>>(this.apiUrl).pipe(
+      map(response => this.convertResponseToClient(response)),
+      catchError(() => of([]))
+    );
   }
 
   getClient(clientId: string): Observable<Client> {
@@ -44,6 +49,16 @@ export class ClientService {
 
   // endpoint is /clientsBatch 
   deleteClients(clientIds: string[]): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}Batch`, { body: { "clientIds" :clientIds} });
+    return this.http.delete<void>(`${this.apiUrl}Batch`, { body: { "clientIds": clientIds } });
+  }
+
+  convertResponseToClient(response: ApiResponse<Client>): Client[] {
+    return response?.status === SUCCESS_STATUS && Array.isArray(response.content)
+      ? response.content.map(client => ({
+          ...client,
+          contacts: Array.isArray(client.contacts) ? client.contacts : [],
+          intermediaries: Array.isArray(client.intermediaries) ? client.intermediaries : []
+        }))
+      : [];
   }
 } 

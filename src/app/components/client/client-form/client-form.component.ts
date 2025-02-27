@@ -114,9 +114,7 @@ export class ClientFormComponent implements OnInit {
   }
 
   private loadClient(clientId: string): void {
-    this.clientService.getClient(clientId).subscribe(client => {
-      this.clientForm.patchValue(client);
-    });
+    this.clientService.getClient(clientId).subscribe(client => this.clientForm.patchValue(client));
   }
 
   private showError(message: string): void {

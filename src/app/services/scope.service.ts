@@ -3,14 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Scope } from '../models/scope.model';
+import { ApiResponse, SUCCESS_STATUS } from '../models/api-response.model';
 import { map, catchError } from 'rxjs/operators';
-
-const SUCCESS_STATUS = 'success';
-
-interface ApiResponse {
-  status: string;
-  content: any[];
-}
 
 @Injectable({
   providedIn: 'root'
@@ -21,17 +15,14 @@ export class ScopeService {
   constructor(private http: HttpClient) { }
 
   getScopes(): Observable<Scope[]> {
-    return this.http.get<ApiResponse>(this.apiUrl).pipe(
+    return this.http.get<ApiResponse<Scope>>(this.apiUrl).pipe(
       map(response => this.convertResponseToScope(response)),
       catchError(() => of([]))
     );
   }
 
-  getScope(id: string): Observable<Scope | null> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/${id}`).pipe(
-      map(response => this.convertResponseToScope(response)[0] || null),
-      catchError(() => of(null))
-    );
+  getScope(id: string): Observable<Scope> {
+    return this.http.get<Scope>(`${this.apiUrl}/${id}`);
   }
 
   createScope(scope: Scope): Observable<Scope> {
@@ -50,12 +41,10 @@ export class ScopeService {
     return this.http.delete<void>(`${this.apiUrl}/batch`, { body: ids });
   }
 
-  convertResponseToScope(response: ApiResponse): Scope[] {
+  convertResponseToScope(response: ApiResponse<Scope>): Scope[] {
     return response?.status === SUCCESS_STATUS && Array.isArray(response.content)
-      ? response.content.map((item: any) => ({
-          scopeName: item?.scopeName ?? '',
-          mappingUrl: item?.mappingUrl ?? '',
-          scopeDesc: item?.scopeDesc ?? ''
+      ? response.content.map(scope => ({
+          ...scope
         }))
       : [];
   }
