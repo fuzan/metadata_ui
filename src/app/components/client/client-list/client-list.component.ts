@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ApiResponse } from '../../../models/api-response.model';
 
 @Component({
   selector: 'app-client-list',
@@ -48,6 +49,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 export class ClientListComponent implements OnInit {
   page: number = 1;
   itemsPerPage: number = 10;
+  totalItems: number = 0;
   dataSource = new MatTableDataSource<Client>([]);
   selection = new SelectionModel<Client>(true, []);
   displayedColumns: string[] = [
@@ -93,17 +95,25 @@ export class ClientListComponent implements OnInit {
 
   loadClients(): void {
     this.isLoading = true;
-    this.clientService.getClients()
-      .pipe(
-        catchError(error => {
-          this.showError('Failed to load clients');
-          return of([]);
-        })
-      )
-      .subscribe(clients => {
+    this.clientService.getClients(this.page, this.itemsPerPage).subscribe(
+      (response: ApiResponse<Client>) => {
+        if (!response.content || response.content.length === 0) {
+          this.page = 1;
+          if (this.page !== 1) {
+            // If not on page 1, reload with page 1
+            this.loadClients();
+            return;
+          }
+        }
+        this.dataSource.data = response.content || [];
+        this.totalItems = response.pagination.total;
         this.isLoading = false;
-        this.dataSource.data = clients;
-      });
+      },
+      error => {
+        this.showError('Failed to load clients');
+        this.isLoading = false;
+      }
+    );
   }
 
   deleteClient(id: string): void {
@@ -210,5 +220,16 @@ export class ClientListComponent implements OnInit {
   clearFilter() {
     this.filterValue = '';
     this.applyFilter();
+  }
+
+  onPageChange(event: any): void {
+    this.page = event;
+    this.loadClients();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.itemsPerPage = event.pageSize;
+    this.page = 1; // Reset to first page when changing page size
+    this.loadClients();
   }
 } 

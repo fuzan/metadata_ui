@@ -15,8 +15,9 @@ import { Org } from '../../../models/org.model';
 import { ClientOrgService } from '../../../services/client-org.service';
 import { ClientService } from '../../../services/client.service';
 import { OrgService } from '../../../services/org.service';
-import { catchError, forkJoin } from 'rxjs';
+import { catchError, forkJoin, map } from 'rxjs';
 import { of } from 'rxjs';
+import { ApiResponse } from '../../../models/api-response.model';
 
 @Component({
   selector: 'app-client-org-form',
@@ -73,7 +74,9 @@ export class ClientOrgFormComponent implements OnInit {
   loadSelectOptions(): void {
     this.isLoading = true;
     forkJoin({
-      clients: this.clientService.getClients(),
+      clients: this.clientService.getClients().pipe(
+        map((response: ApiResponse<Client>) => response.content)
+      ),
       orgs: this.orgService.getOrgs()
     }).pipe(
       catchError(error => {
